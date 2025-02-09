@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decentralized Mood Tracker</title>
+    <style>
+        body { 
+            font-family: 'Arial', sans-serif; 
+            background: #f0f8ff; 
+            margin: 0; 
+            padding: 0; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center;
+        }
+
+        h1 { 
+            font-size: 3em; 
+            color: #4A90E2; 
+            text-align: center; 
+            margin-top: 20px; 
+        }
+
+        .mood-container { 
+            margin: 20px; 
+            background-color: #ffffff; 
+            border-radius: 10px; 
+            padding: 30px; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+            width: 100%; 
+            max-width: 600px;
+        }
+
+        .mood-container form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .mood-container input, .mood-container textarea { 
+            padding: 12px; 
+            font-size: 16px; 
+            width: 100%; 
+            max-width: 350px;
+            margin-bottom: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        .mood-buttons {
+            display: flex;
+            justify-content: space-evenly;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .mood-buttons button {
+            font-size: 2em;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .mood-buttons button:hover {
+            transform: scale(1.2);
+        }
+
+        .mood-buttons button:focus {
+            outline: none;
+        }
+
+        button[type="submit"] { 
+            background-color: #4A90E2; 
+            color: white; 
+            font-size: 18px; 
+            padding: 12px 20px; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            transition: background-color 0.3s;
+        }
+
+        button[type="submit"]:hover { 
+            background-color: #357ab7; 
+        }
+
+        .mood-history {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 40px;
+        }
+
+        .mood-history h2 {
+            text-align: center;
+            font-size: 2em;
+            color: #4A90E2;
+        }
+
+        .mood-button {
+            background-color: #f0f8ff;
+            border: 1px solid #4A90E2;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            cursor: pointer;
+            width: 100%;
+            max-width: 350px;
+            transition: transform 0.3s;
+        }
+
+        .mood-button:hover {
+            transform: scale(1.05);
+        }
+
+        .mood-details {
+            padding: 10px;
+            background-color: #f7f7f7;
+            margin-top: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .mood-details .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .blockchain {
+            margin-top: 30px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        pre {
+            background-color: #f7f7f7;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Decentralized Mood Tracker</h1>
+
+    <!-- Mood Input Form -->
+    <div class="mood-container">
+        <form method="POST">
+            <div class="mood-buttons">
+                <button type="button" onclick="document.getElementById('mood').value = '😊'">😊</button>
+                <button type="button" onclick="document.getElementById('mood').value = '😞'">😞</button>
+                <button type="button" onclick="document.getElementById('mood').value = '😎'">😎</button>
+                <button type="button" onclick="document.getElementById('mood').value = '😡'">😡</button>
+            </div>
+
+            <input type="text" name="mood" id="mood" placeholder="Select Mood" readonly required />
+            <textarea name="note" id="note" placeholder="Any note"></textarea>
+
+            <button type="submit">Add Mood</button>
+        </form>
+    </div>
+
+    <!-- Display Mood History as Buttons -->
+    <div class="mood-history">
+        <h2>Previous Moods</h2>
+        {% for mood in moods %}
+            <button class="mood-button" onclick="toggleDetails('{{ mood.timestamp }}')">
+                {{ mood.mood }} - {{ mood.timestamp }}
+            </button>
+            <div class="mood-details" id="{{ mood.timestamp }}" style="display:none;">
+                <div class="note">{{ mood.note if mood.note else 'No note available.' }}</div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Display Blockchain -->
+    <div class="blockchain">
+        <h2>Blockchain Data</h2>
+        <pre>{{ blockchain | tojson(indent=2) }}</pre>
+    </div>
+
+    <script>
+        function toggleDetails(timestamp) {
+            var details = document.getElementById(timestamp);
+            if (details.style.display === "none") {
+                details.style.display = "block";
+            } else {
+                details.style.display = "none";
+            }
+        }
+    </script>
+
+</body>
+</html>
